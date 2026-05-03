@@ -9,20 +9,24 @@
 </head>
 <body>
         <!-- CONTACT -->
-        <section id="contact">
-            <h3 class="section-title">Contactez-moi</h3>
-
-            <button onclick="openGmail()">
-                <span class="email-icon">📧</span> Contactez-moi
-            </button>
-
-            <button onclick="openLinkedIn()">
-                <span class="email-icon">💼</span> LINKEDIN
-            </button>
-
-            <p>Email : alexiscrotte19@gmail.com</p>
-            <p>Téléphone : 06 41 40 15 49</p>
-        </section>
+         <!-- SECTION CONTACT -->
+                    <section id="contact">
+                        <h3 class="section-title">Contactez-moi</h3>
+                        
+                        <!-- N'oublie pas de remplacer "ton_identifiant" par le code fourni par Formspree après ton inscription -->
+                        <form action="https://formspree.io/f/xnjwjobq" method="POST" id="contact-form">
+                            
+                            <input type="text" name="name" placeholder="Ton Nom" required>
+                            
+                            <input type="email" name="email" placeholder="Ton Email" required>
+                            
+                            <textarea name="message" placeholder="Votre message ou motivation" required></textarea>
+                            
+                            <!-- Le bouton héritera de ton style "Néon" grâce à la classe import-btn -->
+                            <button type="submit" class="import-btn">Envoyer 🚀</button>
+                            
+                        </form>
+                    </section>
 
 
         <!-- FORMULAIRE -->
