@@ -114,24 +114,25 @@
             </section>
 
             <!-- CONTACT -->
-            <div id="contact">
-                <h3 class="section-title">Contactez-moi</h3>
-                <!-- L'attribut action contient ton lien unique Formspree -->
-                <!-- L'attribut method doit être POST -->
-                <form action="https://formspree.io/f/ton_identifiant" method="POST" id="contact-form">
-                    
-                    <input type="text" name="name" placeholder="Ton Nom" required>
-                    
-                    <input type="email" name="email" placeholder="Ton Email" required>
-                    
-                    <!-- Le 'name' est crucial pour recevoir le contenu du message -->
-                    <textarea name="message" placeholder="Votre message ou motivation" required></textarea>
-                    
-                    <!-- Ton bouton doit être de type submit -->
-                    <button type="submit" class="import-btn">Envoyer 🚀</button>
-                    
-                </form>
-                
+         <!-- SECTION CONTACT -->
+                    <section id="contact">
+                        <h3 class="section-title">Contactez-moi</h3>
+                        
+                        <!-- N'oublie pas de remplacer "ton_identifiant" par le code fourni par Formspree après ton inscription -->
+                        <form action="https://formspree.io/f/xnjwjobq" method="POST" id="contact-form">
+                            
+                            <input type="text" name="name" placeholder="Ton Nom" required>
+                            
+                            <input type="email" name="email" placeholder="Ton Email" required>
+                            
+                            <textarea name="message" placeholder="Votre message ou motivation" required></textarea>
+                            
+                            <!-- Le bouton héritera de ton style "Néon" grâce à la classe import-btn -->
+                            <button type="submit" class="import-btn">Envoyer 🚀</button>
+                            
+                        </form>
+                    </section>
+            
               <button onclick="openGmail()">
                 <span class="email-icon">📧</span> Contactez-moi
                 </button>
