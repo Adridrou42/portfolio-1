@@ -399,6 +399,8 @@ input[type="range"]#volume {
     min-height: 120px;
     resize: vertical; /* Permet à l'utilisateur d'agrandir la zone de texte */
      font-size: 1.2rem;  /* Grossit le texte à l'intérieur pour que ce soit proportionnel */
+   width: 100%;
+    box-sizing: border-box;
 }
 #contact-form input[type="text"],
 #contact-form input[type="email"] {
