@@ -359,3 +359,17 @@ const observer = new IntersectionObserver(entries => {
 
 document.querySelectorAll("section").forEach(sec => observer.observe(sec));
 
+
+/* ============================================================
+   GESTION DU FORMULAIRE DE CONTACT
+============================================================ */
+
+const contactForm = document.getElementById('contact-form');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async function(event) {
+        // Optionnel : si tu veux gérer l'envoi en arrière-plan (AJAX)
+        // Sinon, laisse le comportement par défaut de Formspree
+        console.log("Tentative d'envoi du message...");
+    });
+}
