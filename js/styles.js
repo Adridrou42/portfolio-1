@@ -373,3 +373,13 @@ if (contactForm) {
         console.log("Tentative d'envoi du message...");
     });
 }
+
+/* ============================================================
+Boutons de contact linkedin et gmail
+============================================================ */
+function openGmail() {
+    window.open("https://mail.google.com/mail/?view=cm&fs=1&to=alexiscrotte19@gmail.com", "_blank");
+}
+function openLinkedIn() {
+    window.open("https://www.linkedin.com/feed/", "_blank");
+}
