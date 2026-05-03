@@ -119,7 +119,7 @@ body::after {
 section {
     margin: 20px auto;
     padding: 40px;
-    width: 80%;
+    max-width: 800px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: var(--border-radius);
