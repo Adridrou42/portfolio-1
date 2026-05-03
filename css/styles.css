@@ -385,14 +385,14 @@ input[type="range"]#volume {
     font-family: 'Roboto', sans-serif;
     outline: none;
     transition: 0.3s;
-   font-size: 1.2rem;  /* Grossit le texte à l'intérieur pour que ce soit proportionnel */
+   
 }
 
 #contact-form input:focus, 
 #contact-form textarea:focus {
     border-color: #9b5cff;
     box-shadow: 0 0 10px rgba(155, 92, 255, 0.3);
-   font-size: 1.2rem;  /* Grossit le texte à l'intérieur pour que ce soit proportionnel */
+   f
 }
 
 #contact-form textarea {
@@ -400,6 +400,7 @@ input[type="range"]#volume {
     resize: vertical; /* Permet à l'utilisateur d'agrandir la zone de texte */
      font-size: 1.2rem;  /* Grossit le texte à l'intérieur pour que ce soit proportionnel */
 }
+#contact-form input[type="text"],
 #contact-form input[type="email"] {
     width: 50%;        / * Le champ prend toute la largeur du cadre */
       height: 60px;       /* Augmente la hauteur du champ */
