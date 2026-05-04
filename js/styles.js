@@ -1,5 +1,5 @@
 /* ============================================================
-   VARIABLES GLOBALES & INITIALISATION
+    VARIABLES GLOBALES & INITIALISATION
 ============================================================ */
 
 let originalHomeContent = "";
@@ -30,7 +30,7 @@ window.addEventListener('load', () => {
 });
 
 /* ============================================================
-   SPA SYSTEM
+    SPA SYSTEM (Système de navigation)
 ============================================================ */
 document.querySelectorAll("[data-page]").forEach(link => {
     link.addEventListener("click", e => {
@@ -49,13 +49,13 @@ document.querySelectorAll("[data-page]").forEach(link => {
                 return;
             }
 
-            // Chargement des autres pages (Contact, etc.)
+            // Chargement des autres pages
             fetch(`pages/${page}.html`)
                 .then(res => res.text())
                 .then(html => {
                     contentEl.innerHTML = html;
 
-                    // --- NETTOYAGE DU FORMULAIRE ---
+                    // NETTOYAGE : Vide le formulaire dès qu'on arrive sur la page
                     const form = contentEl.querySelector('form');
                     if (form) {
                         form.reset(); 
@@ -75,8 +75,39 @@ document.querySelectorAll("[data-page]").forEach(link => {
         }
     });
 });
+
 /* ============================================================
-   FONCTIONS CORE DU LECTEUR
+    RÉINITIALISATION DES SCRIPTS (Après changement de page)
+============================================================ */
+function reinitPageScripts() {
+    if (typeof initContactButton === "function") initContactButton();
+    
+    // Relance l'observateur d'animations
+    document.querySelectorAll("section").forEach(sec => {
+        if (typeof observer !== 'undefined') observer.observe(sec);
+    });
+
+    // --- LOGIQUE DE NETTOYAGE FORMSPREE ---
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            // On laisse un petit délai pour que Formspree récupère les données
+            setTimeout(() => {
+                form.reset();
+                form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+            }, 500);
+        });
+    }
+
+    // Ajout automatique du bouton retour si on n'est pas sur l'accueil
+    const contentEl = document.getElementById("content");
+    if (contentEl && contentEl.innerHTML !== originalHomeContent) {
+        ajouterBoutonRetour();
+    }
+}
+
+/* ============================================================
+    FONCTIONS CORE DU LECTEUR
 ============================================================ */
 
 function loadSong(index, userTriggered = false) {
@@ -103,18 +134,14 @@ function loadSong(index, userTriggered = false) {
 
 function nextSong(userTriggered = false) {
     let index;
-    
     if (isShuffle && !isRepeat) {
-        // Choisit un index au hasard
         index = Math.floor(Math.random() * playlist.length);
-        // Évite de retomber sur la même si possible
         if (index === currentSongIndex && playlist.length > 1) {
             index = (index + 1) % playlist.length;
         }
     } else {
         index = (currentSongIndex + 1) % playlist.length;
     }
-    
     loadSong(index, userTriggered);
 }
 
@@ -131,12 +158,10 @@ function formatTime(seconds) {
 }
 
 /* ============================================================
-   FADE & EQUALIZER
+    FADE & EQUALIZER
 ============================================================ */
 
 function fadeIn(audioElement) {
-
-    // ... reste du code
     const targetVolume = volControl ? parseFloat(volControl.value) : 0.5;
     audioElement.volume = 0;
     audioElement.play().catch(e => console.log("Lecture bloquée"));
@@ -179,57 +204,52 @@ function stopEqualizer() {
 }
 
 /* ============================================================
-   IMPORTATION DE DOSSIER COMPLET + GESTION DES FICHIERS AUDIO
+    IMPORTATION DE MUSIQUES
 ============================================================ */
 const fileInput = document.getElementById('fileInput');
 const folderInput = document.getElementById('folderInput');
 const importFilesBtn = document.getElementById('importFilesBtn');
 const importFolderBtn = document.getElementById('importFolderBtn');
 
-// Fonction centrale pour traiter l'ajout à la playlist
 function handleFiles(files) {
     if (files.length === 0) return;
-
     const oldLength = playlist.length;
     let musicAdded = false;
 
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        // On accepte uniquement l'audio
         if (file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.mp3')) {
             playlist.push({
-                title: file.name.replace(/\.[^/.]+$/, ""), // Nettoie le nom
+                title: file.name.replace(/\.[^/.]+$/, ""),
                 src: URL.createObjectURL(file)
             });
             musicAdded = true;
         }
     }
 
-    // Si une musique a été ajoutée et que rien ne joue, on lance la lecture
     if (musicAdded && (audio.paused || !audio.src)) {
         loadSong(oldLength, true);
     }
 }
 
-// Configuration du bouton pour les FICHIERS
 if (importFilesBtn && fileInput) {
     importFilesBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
         handleFiles(e.target.files);
-        fileInput.value = ""; // Permet de ré-importer le même fichier
+        fileInput.value = "";
     });
 }
 
-// Configuration du bouton pour les DOSSIERS
 if (importFolderBtn && folderInput) {
     importFolderBtn.addEventListener('click', () => folderInput.click());
     folderInput.addEventListener('change', (e) => {
         handleFiles(e.target.files);
-        folderInput.value = ""; // Permet de ré-importer le même dossier
+        folderInput.value = "";
     });
 }
+
 /* ============================================================
-   EVENT LISTENERS
+    EVENT LISTENERS (Lecteur)
 ============================================================ */
 
 if (playPauseBtn) {
@@ -269,11 +289,8 @@ if (audio) {
     });
 
     audio.addEventListener('ended', () => {
-        if (isRepeat) {
-            loadSong(currentSongIndex, true);
-        } else {
-            nextSong(false);
-        }
+        if (isRepeat) loadSong(currentSongIndex, true);
+        else nextSong(false);
     });
 }
 
@@ -287,50 +304,40 @@ if (progressContainer) {
 }
 
 /* ============================================================
-    LOGIQUE DES BOUTONS REPEAT & SHUFFLE (AVEC BADGES)
+    REPEAT & SHUFFLE
 ============================================================ */
-
-// Bouton Repeat
 const repeatBtn = document.getElementById('repeatBtn');
 const repeatStatus = document.getElementById('repeatStatus'); 
 
 if (repeatBtn) {
     repeatBtn.addEventListener('click', () => {
         isRepeat = !isRepeat;
-        
-        // Style visuel du bouton
         repeatBtn.style.color = isRepeat ? "#00d4ff" : "#fff";
         repeatBtn.style.textShadow = isRepeat ? "0 0 15px #00d4ff" : "none";
-        
-        // Mise à jour du petit chiffre (Badge)
         if (repeatStatus) {
             repeatStatus.textContent = isRepeat ? "1" : "0";
-            repeatStatus.style.opacity = isRepeat ? "1" : "0.5"; // Optionnel : plus discret quand désactivé
+            repeatStatus.style.opacity = isRepeat ? "1" : "0.5";
         }
     });
 }
 
-// Bouton Shuffle
 const shuffleBtn = document.getElementById('shuffleBtn');
 const shuffleStatus = document.getElementById('shuffleStatus');
 
 if (shuffleBtn) {
     shuffleBtn.addEventListener('click', () => {
         isShuffle = !isShuffle;
-        
-        // Style visuel du bouton
         shuffleBtn.style.color = isShuffle ? "#9b5cff" : "#fff";
         shuffleBtn.style.textShadow = isShuffle ? "0 0 15px #9b5cff" : "none";
-        
-        // Mise à jour du petit chiffre (Badge)
         if (shuffleStatus) {
             shuffleStatus.textContent = isShuffle ? "1" : "0";
             shuffleStatus.style.opacity = isShuffle ? "1" : "0.5";
         }
     });
 }
+
 /* ============================================================
-   STATE & OBSERVER
+    STATE & OBSERVER
 ============================================================ */
 
 function saveState() {
@@ -363,10 +370,8 @@ const observer = new IntersectionObserver(entries => {
     });
 }, { threshold: 0.2 });
 
-document.querySelectorAll("section").forEach(sec => observer.observe(sec));
-
 /* ============================================================
-Boutons de contact linkedin et gmail
+    CONTACT & NAVIGATION
 ============================================================ */
 function openGmail() {
     window.open("https://mail.google.com/mail/?view=cm&fs=1&to=alexiscrotte19@gmail.com", "_blank");
@@ -375,49 +380,34 @@ function openLinkedIn() {
     window.open("https://www.linkedin.com/feed/", "_blank");
 }
 
-/* ============================================================
-Boutons ²Retour à l'accueil
-============================================================ */
 function ajouterBoutonRetour() {
     const contentEl = document.getElementById("content");
     if (!contentEl) return;
 
-    // 1. Créer l'élément div conteneur
     const container = document.createElement("div");
     container.className = "back-home";
     container.style.marginTop = "30px";
     container.style.textAlign = "center";
 
-    // 2. Créer le bouton (balise <a>)
     const btn = document.createElement("a");
     btn.href = "#";
-    btn.className = "import-btn"; // On reprend ton style néon
+    btn.className = "import-btn";
     btn.innerHTML = "Retour à l'accueil 🏠";
     btn.style.cursor = "pointer";
     btn.style.position = "relative";
     btn.style.zIndex = "1000";
 
-    // 3. Lui donner l'action de retour
     btn.onclick = (e) => {
         e.preventDefault();
-        
         const changePage = () => {
-            // On utilise la variable que tu as déjà définie au début du script
             contentEl.innerHTML = originalHomeContent; 
-            reinitPageScripts(); // Relance les observateurs et scripts
-            window.scrollTo(0, 0); // Remonte en haut de page
+            reinitPageScripts();
+            window.scrollTo(0, 0);
         };
-
-        // Utilise ta transition si elle existe
-        if (typeof playFlashTransition === "function") {
-            playFlashTransition(changePage);
-        } else {
-            changePage();
-        }
+        if (typeof playFlashTransition === "function") playFlashTransition(changePage);
+        else changePage();
     };
 
-    // 4. L'ajouter à la fin du contenu
     container.appendChild(btn);
     contentEl.appendChild(container);
 }
-
